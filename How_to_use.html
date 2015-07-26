@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="templating.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+  <template id=t>
+    <p><a href="{{ url }}">{{ foo.bar.baz }} {{ quux }}</a>!</p>
+    <!--
+    Loop over arrays. Use data attributes of
+    data-repeat-[name]="x.y.z" and reference
+    the values iterated over using {{ [name] }}.
+
+    For arrays the 'i' state variable is also set.
+    -->
+    <ul data-repeat-char="list">
+      <li>{{ char }} {{ i }}</li>
+    </ul>
+
+    <ul data-repeat-char-index="list">
+      <li>{{ char }} {{ index }}</li>
+    </ul>
+    <p data-repeat-char-index="list">
+      {{ char }} {{ index }}
+    </p>
+
+    <!--
+    Loop over Objects. For objects the 'key' state variable is also set.
+    -->
+    <ul data-repeat-o="anobj">
+      <li>{{ key }}={{ o.name }}</li>
+      <li>{{ o.name }}={{ key }}</li>
+    </ul>
+
+    <ul data-repeat-value-key2="anobj">
+      <li>{{ key2 }}={{ value.name }}</li>
+    </ul>
+
+    <!-- Nested repeat loops. -->
+    <ul data-repeat-value-key="top">
+      <li>{{ key }}
+        <ol data-repeat-value2-key2="{{ value }}">
+          <li>{{ key2 }}={{ value2.name }}</li>
+        </ol>
+      </li>
+    </ul>
+  </template>
+
+  <script type="text/javascript" charset="utf-8">
+
+    var data = {
+        foo: { bar: { baz: "Hello"}},
+        quux: "World",
+        list: ["a", "b", "c"],
+        anobj: {
+          foo: {name: "Fred"},
+          bar: {name: "Barney"}
+        },
+        top: {
+          foo: {
+            baz: {name: "Foo Baz"},
+            quux: {name: "Foo Quux"}
+          },
+          bar: {
+            larry: {name: "Bar Larry"},
+            curly: {name: "Bar Curly"}
+          },
+        },
+        url: "http://example.com",
+    };
+    var c = expand(new Context().import('t'), data);
+    document.body.appendChild(c[0]);
+  </script>
+
+</body>
+</html>
