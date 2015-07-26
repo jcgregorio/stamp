@@ -43,7 +43,7 @@
     <ul data-repeat-value-key="top">
       <li>{{ key }}
         <ol data-repeat-value2-key2="{{ value }}">
-          <li>{{ key2 }}={{ value2.name }}</li>
+          <li>{{ ^.^.quux }}  {{ ^.key }} - {{ key2 }}={{ value2.name }}</li>
         </ol>
       </li>
     </ul>
@@ -71,7 +71,7 @@
         },
         url: "http://example.com",
     };
-    var c = expand(new Context().import('t'), data);
+    var c = Stamp.expand(new Stamp.Context().import('t'), data);
     document.body.appendChild(c[0]);
   </script>
 

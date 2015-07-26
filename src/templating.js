@@ -1,3 +1,5 @@
+var Stamp = Stamp || {};
+
 (function(ns) {
 
   // Utilty object to capture the document context of the script
@@ -8,7 +10,7 @@
       (document.currentScript||document._currentScript).ownerDocument;
   };
 
-  Context.prototype.import = function(id) {
+  ns.Context.prototype.import = function(id) {
     return document.importNode(this.doc.querySelector('#'+id).content, true);
   };
 
@@ -115,7 +117,7 @@
                   var instanceState = {};
                   instanceState[name] = item;
                   instanceState[iterName || "i"] = i;
-                  instanceState["^"] = childState;
+                  instanceState["^"] = state;
                   expand(cl, instanceState);
                   cl.forEach(function(aNode) {
                     e.appendChild(aNode);
@@ -128,7 +130,7 @@
                   var instanceState = {};
                   instanceState[name] = childState[key];
                   instanceState[iterName || "key"] = key;
-                  instanceState["^"] = childState;
+                  instanceState["^"] = state;
                   expand(cl, instanceState);
                   cl.forEach(function(aNode) {
                     e.appendChild(aNode);
@@ -154,4 +156,4 @@
   }
 
   ns.expand = expand;
-})(this);
+})(Stamp);
