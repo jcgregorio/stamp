@@ -23,13 +23,14 @@ var Stamp = Stamp || {};
   // I.e. if the state is {a: {b: [9, 8, 7]}} then the address of ["a", "b", 0] would return 9.
   function filterState(address, state) {
     var mystate = state;
-    address.forEach(function(a) {
+    for (var i = 0, len = address.length; i < len; i++) {
+      var a = address[i];
       if (mystate.hasOwnProperty(a)) {
         mystate = mystate[a];
       } else {
         throw a + " is not a valid property of " + JSON.stringify(mystate);
       }
-    });
+    }
     return mystate;
   }
 
@@ -66,21 +67,31 @@ var Stamp = Stamp || {};
     return null;
   }
 
+  // Takes an array of nodes and returns an array of cloned nodes
+  // in the same order.
   function cloneAllNodes(a) {
     var clones = [];
-    a.forEach(function(e) {
-      clones.push(e.cloneNode(true));
-    });
+    for (var i = 0, len = a.length; i < len; i++) {
+      clones.push(a[i].cloneNode(true));
+    }
     return clones;
+  }
+
+  // Append all the elements in 'nodes' as children of 'ele'.
+  function appendChildren(ele, nodes) {
+    for (var i = 0, len = nodes.length; i < len; i++) {
+      ele.appendChild(nodes[i]);
+    }
   }
 
   // Expand all the double moustaches found in the node
   // 'e' and all its children against the data in 'state'.
-  function expand(e, state) {
-    if (!Array.isArray(e)) {
-      e = [e];
+  function expand(ele, state) {
+    if (!Array.isArray(ele)) {
+      ele = [ele];
     }
-    e.forEach(function(e) {
+    for (var j = 0, len = ele.length; j < len; j++) {
+      var e = ele[j];
       var processChildren = true;
       if (e.nodeName === "#text") {
         m = expandString(e.textContent, state);
@@ -95,7 +106,7 @@ var Stamp = Stamp || {};
               processChildren = false;
               var parts = attr.name.split('-');
               if (parts.length !== 3 && parts.length !== 4) {
-                throw "Repeat format is data-repeat-<name>[-<iter>]. Got " + attr.name;
+                throw "Repeat format is data-repeat-<name>[-<iterName>]. Got " + attr.name;
               }
               var name = parts[2];
               var iterName = parts[3];
@@ -111,31 +122,29 @@ var Stamp = Stamp || {};
                 throw attr.value + " doesn't contain an address.";
               }
               var childState = filterState(address, state);
-              if ('forEach' in childState) {
-                childState.forEach(function(item, i) {
+              if (Object.prototype.toString.call( childState) === '[object Array]') {
+                for (var k = 0, klen = childState.length; k < klen; k++) {
+                  var item = childState[k];
                   var cl = cloneAllNodes(tpl);
                   var instanceState = {};
                   instanceState[name] = item;
-                  instanceState[iterName || "i"] = i;
+                  instanceState[iterName || "i"] = k;
                   instanceState["^"] = state;
                   expand(cl, instanceState);
-                  cl.forEach(function(aNode) {
-                    e.appendChild(aNode);
-                  });
-                });
+                  appendChildren(e, cl);
+                }
               } else {
                 var keys = Object.keys(childState).sort();
-                keys.forEach(function(key) {
+                for (var m = 0, mlen = keys.length; m < mlen; m++) {
+                  var key = keys[m];
                   var cl = cloneAllNodes(tpl);
                   var instanceState = {};
                   instanceState[name] = childState[key];
                   instanceState[iterName || "key"] = key;
                   instanceState["^"] = state;
                   expand(cl, instanceState);
-                  cl.forEach(function(aNode) {
-                    e.appendChild(aNode);
-                  });
-                });
+                  appendChildren(e, cl);
+                }
               }
             } else {
               m = expandString(attr.value, state);
@@ -147,12 +156,12 @@ var Stamp = Stamp || {};
         }
       }
       if (processChildren) {
-        for (var i=0; i<e.childNodes.length; i++) {
+        for (var i = e.childNodes.length - 1; i >= 0; i--) {
           expand(e.childNodes[i], state);
         }
       }
-    });
-    return e;
+    }
+    return ele;
   }
 
   ns.expand = expand;
