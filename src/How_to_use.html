@@ -4,6 +4,14 @@
     <title></title>
     <meta charset="utf-8" />
     <script src="templating.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css" media="screen">
+      .itemfoo {
+        color: red;
+      }
+      .itembar {
+        color: blue;
+      }
+    </style>
 </head>
 <body>
 
@@ -31,7 +39,7 @@
     Loop over Objects. For objects the 'key' state variable is also set.
     -->
     <ul data-repeat-o="anobj">
-      <li>{{ key }}={{ o.name }}</li>
+      <li class$="item{{ key }}">{{ key }}={{ o.name }}</li>
       <li>{{ o.name }}={{ key }}</li>
     </ul>
 
