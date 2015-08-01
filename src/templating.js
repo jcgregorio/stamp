@@ -14,6 +14,16 @@ var Stamp = Stamp || {};
     return document.importNode(this.doc.querySelector('#'+id).content, true);
   };
 
+  ns.newElement = function(name, proto) {
+    var ep = Object.create(HTMLElement.prototype);
+    Object.keys(proto).forEach(function(key) {
+      ep[key] = proto[key];
+    });
+    document.registerElement(name, {
+      prototype: ep
+    });
+  }
+
   // Regex to grab double moustache'd content.
   var re = /{{\s([\w\.\^]+)\s}}/;
 
@@ -168,7 +178,35 @@ var Stamp = Stamp || {};
       }
     }
     return ele;
-  }
+  };
+
+  // <host-content> acts similar to the classic <content select="[css selector]"></content>
+  ns.newElement('host-content', {});
+
+  // Look for <host-content> elements in target and use their select's to pick
+  // nodes from source to replace it with.
+  function distribute(target, source) {
+    var nodes = target.querySelectorAll('host-content');
+    for (var i=nodes.length-1; i>=0; i--) {
+      var node = nodes.item(i);
+      var parent = node.parentNode;
+      var select = node.getAttribute('select');
+      if (select) {
+        var sources = source.querySelectorAll(select);
+        for (var j=sources.length-1; j>=0; j--) {
+          parent.insertBefore(sources.item(j), node);
+        }
+      }
+      parent.removeChild(node);
+    }
+  };
+
+  ns.exandAndDistribute = function(ele, state, source) {
+    return distribute(expand(ele, state), source);
+  };
 
   ns.expand = expand;
+  ns.distribute = distribute;
+
+
 })(Stamp);

@@ -57,6 +57,29 @@
     </ul>
   </template>
 
+
+  <div id=target>
+    <host-content select="h1"></host-content>
+    <host-content select="p"></host-content>
+  </div>
+
+  <div id=source>
+    <p>First paragraph</p>
+    <p>Second paragraph</p>
+    <h1>A header</h1>
+  </div>
+
+  <div id=target2>
+    <button>Press Me</button>
+    <host-content select="*"></host-content>
+  </div>
+
+  <div id=source2>
+    <p>Second paragraph</p>
+    <h1>A header</h1>
+  </div>
+
+
   <script type="text/javascript" charset="utf-8">
 
     var data = {
@@ -81,6 +104,14 @@
     };
     var c = Stamp.expand(new Stamp.Context().import('t'), data);
     document.body.appendChild(c[0]);
+
+    var source = document.getElementById('source');
+    var target = document.getElementById('target');
+    Stamp.distribute(target, source);
+
+    var source2 = document.getElementById('source2');
+    var target2 = document.getElementById('target2');
+    Stamp.distribute(target2, source2);
   </script>
 
 </body>
