@@ -1,0 +1,16 @@
+<template id=u>
+  <button>{{ title }}</button>
+  <div>
+    <host-content select="*"></host-content>
+  </div>
+</template>
+
+<script type="text/javascript" charset="utf-8">
+  Stamp.newElement('my-element', {
+    createdCallback: function() {
+      this.title = "Hello";
+      var d = Stamp.expandAndDistribute(this._context.import('u'), this, this);
+      Stamp.appendChildren(this, d);
+    },
+  });
+</script>

@@ -12,6 +12,7 @@
         color: blue;
       }
     </style>
+    <link rel="import" href="import.html">
 </head>
 <body>
 
@@ -79,6 +80,23 @@
     <h1>A header</h1>
   </div>
 
+  <template id=u>
+    <button>{{ title }}</button>
+    <div>
+      <host-content select="*"></host-content>
+    </div>
+  </template>
+
+  <div id=source3>
+    <h1>A header</h1>
+    <p>Second paragraph</p>
+  </div>
+
+  <div id=source4>
+    <ul>
+      <li>Second paragraph</li>
+    </ul>
+  </div>
 
   <script type="text/javascript" charset="utf-8">
 
@@ -101,8 +119,12 @@
           },
         },
         url: "http://example.com",
+        title: "Press Me",
     };
-    var c = Stamp.expand(new Stamp.Context().import('t'), data);
+
+    var ctx = new Stamp.Context();
+
+    var c = Stamp.expand(ctx.import('t'), data);
     document.body.appendChild(c[0]);
 
     var source = document.getElementById('source');
@@ -112,7 +134,18 @@
     var source2 = document.getElementById('source2');
     var target2 = document.getElementById('target2');
     Stamp.distribute(target2, source2);
+
+    var source3 = document.getElementById('source3');
+    var d = Stamp.expandAndDistribute(ctx.import('u'), data, source3);
+    document.body.appendChild(d[0]);
+
+    var source4 = document.getElementById('source4');
+    var d = Stamp.expandAndDistributeTemplate('u', data, source4);
+    document.body.appendChild(d[0]);
+
   </script>
+
+  <my-element><img src=broken/></my-element>
 
 </body>
 </html>

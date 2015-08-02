@@ -19,6 +19,7 @@ var Stamp = Stamp || {};
     Object.keys(proto).forEach(function(key) {
       ep[key] = proto[key];
     });
+    ep._context = new ns.Context();
     document.registerElement(name, {
       prototype: ep
     });
@@ -35,7 +36,7 @@ var Stamp = Stamp || {};
     var mystate = state;
     for (var i = 0, len = address.length; i < len; i++) {
       var a = address[i];
-      if (mystate.hasOwnProperty(a)) {
+      if (a in mystate) {
         mystate = mystate[a];
       } else {
         throw a + " is not a valid property of " + JSON.stringify(mystate);
@@ -185,28 +186,43 @@ var Stamp = Stamp || {};
 
   // Look for <host-content> elements in target and use their select's to pick
   // nodes from source to replace it with.
-  function distribute(target, source) {
-    var nodes = target.querySelectorAll('host-content');
-    for (var i=nodes.length-1; i>=0; i--) {
-      var node = nodes.item(i);
-      var parent = node.parentNode;
-      var select = node.getAttribute('select');
-      if (select) {
-        var sources = source.querySelectorAll(select);
-        for (var j=sources.length-1; j>=0; j--) {
-          parent.insertBefore(sources.item(j), node);
-        }
-      }
-      parent.removeChild(node);
+  function distribute(targets, source) {
+    if (!Array.isArray(targets)) {
+      targets = [targets];
     }
+    for (var i = targets.length - 1; i >= 0; i--) {
+      var target = targets[i];
+      var nodes = target.querySelectorAll('host-content');
+      for (var i=nodes.length-1; i>=0; i--) {
+        var node = nodes.item(i);
+        var parent = node.parentNode;
+        var select = node.getAttribute('select');
+        if (select) {
+          var sources = source.querySelectorAll(select);
+          for (var j=sources.length-1; j>=0; j--) {
+            parent.insertBefore(sources.item(j), node);
+          }
+        }
+        parent.removeChild(node);
+      }
+    }
+    return targets;
   };
 
-  ns.exandAndDistribute = function(ele, state, source) {
+  function expandAndDistribute (ele, state, source) {
     return distribute(expand(ele, state), source);
   };
 
+  function expandAndDistributeTemplate (id, state, source) {
+    var doc = (document.currentScript||document._currentScript).ownerDocument;
+    var node = document.importNode(doc.querySelector('#'+id).content, true);
+    return distribute(expand(node, state), source);
+  };
+
+  ns.appendChildren = appendChildren;
   ns.expand = expand;
   ns.distribute = distribute;
-
+  ns.expandAndDistribute = expandAndDistribute;
+  ns.expandAndDistributeTemplate = expandAndDistributeTemplate;
 
 })(Stamp);
