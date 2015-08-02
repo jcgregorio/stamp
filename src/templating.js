@@ -19,7 +19,9 @@ var Stamp = Stamp || {};
     Object.keys(proto).forEach(function(key) {
       ep[key] = proto[key];
     });
-    ep._context = new ns.Context();
+    var __ = ep.__ = {};
+    __.context = new ns.Context();
+    __.name = name;
     document.registerElement(name, {
       prototype: ep
     });
@@ -219,10 +221,26 @@ var Stamp = Stamp || {};
     return distribute(expand(node, state), source);
   };
 
+  // state is optional, if not provided then 'ele' is used.
+  // Presumes that ele is a custom element created with newElement, i.e.
+  // that ele.__.context will be a Context object, and that
+  // ele.__.name will be the element name.
+  function elementExpand(ele, id, state) {
+    if (state === undefined) {
+      state = ele;
+    }
+    if (id === undefined) {
+      id = ele.__.name;
+    }
+    var d = ns.expandAndDistribute(ele.__.context.import(id), state, ele);
+    ns.appendChildren(ele, d);
+  }
+
   ns.appendChildren = appendChildren;
   ns.expand = expand;
   ns.distribute = distribute;
   ns.expandAndDistribute = expandAndDistribute;
   ns.expandAndDistributeTemplate = expandAndDistributeTemplate;
+  ns.elementExpand = elementExpand;
 
 })(Stamp);

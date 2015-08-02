@@ -1,4 +1,4 @@
-<template id=u>
+<template id="my-element">
   <button>{{ title }}</button>
   <div>
     <host-content select="*"></host-content>
@@ -9,8 +9,7 @@
   Stamp.newElement('my-element', {
     createdCallback: function() {
       this.title = "Hello";
-      var d = Stamp.expandAndDistribute(this._context.import('u'), this, this);
-      Stamp.appendChildren(this, d);
+      Stamp.elementExpand(this);
     },
   });
 </script>
