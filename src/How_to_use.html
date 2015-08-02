@@ -138,14 +138,19 @@
     var source3 = document.getElementById('source3');
     var d = Stamp.expandAndDistribute(ctx.import('u'), data, source3);
     document.body.appendChild(d[0]);
-
-    var source4 = document.getElementById('source4');
-    var d = Stamp.expandAndDistributeTemplate('u', data, source4);
-    document.body.appendChild(d[0]);
-
   </script>
 
-  <my-element><img src=broken/></my-element>
+  <my-element>
+    <button>Me</button>
+  </my-element>
+
+  <my-element2 id=e2>
+    <button>Me</button>
+  </my-element2>
+
+  <script type="text/javascript" charset="utf-8">
+    document.getElementById('e2').setData({title: "Fin!"});
+  </script>
 
 </body>
 </html>

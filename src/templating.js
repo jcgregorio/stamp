@@ -6,14 +6,14 @@ var Stamp = Stamp || {};
   // tag that instantiated the Context. Useful for getting access to
   // assetts in HTML Imports.
   ns.Context = function() {
-    this.doc =
-      (document.currentScript||document._currentScript).ownerDocument;
+    this.doc = (document.currentScript||document._currentScript).ownerDocument;
   };
 
   ns.Context.prototype.import = function(id) {
     return document.importNode(this.doc.querySelector('#'+id).content, true);
   };
 
+  // Utiltity function for creating a custom element.
   ns.newElement = function(name, proto) {
     var ep = Object.create(HTMLElement.prototype);
     Object.keys(proto).forEach(function(key) {
@@ -30,10 +30,10 @@ var Stamp = Stamp || {};
   // Regex to grab double moustache'd content.
   var re = /{{\s([\w\.\^]+)\s}}/;
 
-  // Returns 'state' after applying address, where address is an array of
-  // string.
+  // Returns 'state' after applying address, where address is an array of string.
   //
-  // I.e. if the state is {a: {b: [9, 8, 7]}} then the address of ["a", "b", 0] would return 9.
+  // I.e. if the state is {a: {b: [9, 8, 7]}} then the address
+  // of ["a", "b", 0] would return 9.
   function filterState(address, state) {
     var mystate = state;
     for (var i = 0, len = address.length; i < len; i++) {
@@ -98,7 +98,7 @@ var Stamp = Stamp || {};
   }
 
   // Expand all the double moustaches found in the node
-  // 'e' and all its children against the data in 'state'.
+  // 'ele' and all its children against the data in 'state'.
   function expand(ele, state) {
     if (!Array.isArray(ele)) {
       ele = [ele];
@@ -211,17 +211,14 @@ var Stamp = Stamp || {};
     return targets;
   };
 
-  function expandAndDistribute (ele, state, source) {
+  // Expand ele with the values in state, then distribute
+  // nodes in source within the result.
+  function expandAndDistribute(ele, state, source) {
     return distribute(expand(ele, state), source);
   };
 
-  function expandAndDistributeTemplate (id, state, source) {
-    var doc = (document.currentScript||document._currentScript).ownerDocument;
-    var node = document.importNode(doc.querySelector('#'+id).content, true);
-    return distribute(expand(node, state), source);
-  };
-
   // state is optional, if not provided then 'ele' is used.
+  // id is optional, if not provided then ele.__.name is used.
   // Presumes that ele is a custom element created with newElement, i.e.
   // that ele.__.context will be a Context object, and that
   // ele.__.name will be the element name.
@@ -240,7 +237,5 @@ var Stamp = Stamp || {};
   ns.expand = expand;
   ns.distribute = distribute;
   ns.expandAndDistribute = expandAndDistribute;
-  ns.expandAndDistributeTemplate = expandAndDistributeTemplate;
   ns.elementExpand = elementExpand;
-
 })(Stamp);

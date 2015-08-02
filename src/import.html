@@ -13,3 +13,27 @@
     },
   });
 </script>
+
+
+<template id="my-template">
+  <button>{{ title }}</button>
+  <div>
+    <host-content select="*"></host-content>
+  </div>
+</template>
+
+<script type="text/javascript" charset="utf-8">
+  (function() {
+    var ctx = new Stamp.Context();
+
+    Stamp.newElement('my-element2', {
+      createdCallback: function() {
+        this.title = "Hello";
+      },
+
+      setData: function(data) {
+        Stamp.appendChildren(this, Stamp.expand(ctx.import('my-template'), data));
+      },
+    });
+  })();
+</script>
