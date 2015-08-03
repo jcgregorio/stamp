@@ -97,6 +97,17 @@ var Stamp = Stamp || {};
     }
   }
 
+  function removeChildren(ele) {
+    while (ele.firstChild) {
+      ele.removeChild(ele.firstChild);
+    }
+  }
+
+  function replaceChildren(ele, nodes) {
+    removeChildren(ele);
+    appendChildren(ele, nodes);
+  }
+
   // Expand all the double moustaches found in the node
   // 'ele' and all its children against the data in 'state'.
   function expand(ele, state) {
@@ -183,6 +194,10 @@ var Stamp = Stamp || {};
     return ele;
   };
 
+  function expandInto(target, ele, state) {
+    replaceChildren(target, expand(ele, state));
+  }
+
   // <host-content> acts similar to the classic <content select="[css selector]"></content>
   ns.newElement('host-content', {});
 
@@ -238,4 +253,5 @@ var Stamp = Stamp || {};
   ns.distribute = distribute;
   ns.expandAndDistribute = expandAndDistribute;
   ns.elementExpand = elementExpand;
+  ns.expandInto = expandInto;
 })(Stamp);

@@ -17,9 +17,6 @@
 
 <template id="my-template">
   <button>{{ title }}</button>
-  <div>
-    <host-content select="*"></host-content>
-  </div>
 </template>
 
 <script type="text/javascript" charset="utf-8">
@@ -32,7 +29,7 @@
       },
 
       setData: function(data) {
-        Stamp.appendChildren(this, Stamp.expand(ctx.import('my-template'), data));
+        Stamp.expandInto(this, ctx.import('my-template'), data);
       },
     });
   })();
