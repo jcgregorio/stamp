@@ -174,7 +174,7 @@ var Stamp = Stamp || {};
               m = expandString(attr.value, state);
               if (m != null) {
                 var name = attr.name;
-                if (name.charAt(name.length-1) == "$") {
+                if (name.charAt(name.length-1) == "-") {
                   e.removeAttribute(attr.name);
                   e.setAttribute(attr.name.slice(0, -1), m);
                 } else {
