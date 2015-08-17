@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="templating.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css" media="screen">
+      .itemfoo {
+        color: red;
+      }
+      .itembar {
+        color: blue;
+      }
+    </style>
+    <link rel="import" href="import.html">
+</head>
+<body>
+
+  <button id=run>Run</button>
+  <template id=t>
+    <ul data-repeat-l="list">
+      <li class=row id="{{ l.id }}">{{ l.label }}</li>
+    </ul>
+  </template>
+  <p id=time></p>
+  <div id=content>
+  </div>
+
+  <script type="text/javascript" charset="utf-8">
+    function _random(max) {
+      return Math.round(Math.random()*1000)%max;
+    }
+
+    function _buildData(count) {
+        count = count || 1000;
+        var adjectives = ["pretty", "large", "big", "small", "tall", "short", "long", "handsome", "plain", "quaint", "clean", "elegant", "easy", "angry", "crazy", "helpful", "mushy", "odd", "unsightly", "adorable", "important", "inexpensive", "cheap", "expensive", "fancy"];
+        var colours = ["red", "yellow", "blue", "green", "pink", "brown", "purple", "brown", "white", "black", "orange"];
+        var nouns = ["table", "chair", "house", "bbq", "desk", "car", "pony", "cookie", "sandwich", "burger", "pizza", "mouse", "keyboard"];
+        var data = [];
+        for (var i = 0; i < count; i++)
+          data.push({
+            id: i+1,
+            label: adjectives[_random(adjectives.length)] + " " + colours[_random(colours.length)] + " " + nouns[_random(nouns.length)]
+          });
+        return data;
+      }
+
+    var ctx = new Stamp.Context();
+
+    document.getElementById('run').addEventListener('click', function() {
+      var content = document.getElementById("content");
+      content.innerHTML = "";
+      var data = _buildData();
+      var date = new Date();
+      var c = Stamp.expand(ctx.import('t'), {list: data});
+      content.appendChild(c[0]);
+      document.getElementById("time").textContent = (new Date() - date) + " ms";
+    });
+  </script>
+
+</body>
+</html>
