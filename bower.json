@@ -1,0 +1,22 @@
+{
+  "name": "wcstamp",
+  "homepage": "https://github.com/jcgregorio/stamp",
+  "authors": [
+    "Joe Gregorio <joe@bitworking.org>"
+  ],
+  "description": "A fast and simple templating library using the web components 'template' element.",
+  "main": "src/stamp.js",
+  "moduleType": [],
+  "keywords": [
+    "webcomponents",
+    "template"
+  ],
+  "license": "Apache 2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
