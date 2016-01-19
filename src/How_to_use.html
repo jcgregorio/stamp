@@ -17,7 +17,13 @@
 <body>
 
   <template id=t>
-    <p><a href="{{ url }}">{{ foo.bar.baz }} {{ quux }}</a>!</p>
+    <!--
+      Note the optional trailing "-" on href which is removd one
+      the expansion is complete. Any [name] can have a trailing
+      "-".
+    -->
+    <p><a href-="{{ url }}">{{ foo.bar.baz }} {{ quux }}</a>!</p>
+
     <!--
     Loop over arrays. Use data attributes of
     data-repeat-[name]="x.y.z" and reference

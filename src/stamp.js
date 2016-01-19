@@ -190,6 +190,9 @@ var Stamp = Stamp || {};
               m = expandString(attr.value, state);
               if (m != null) {
                 var name = attr.name;
+                // Strip trailing "-" from attribute names. This allows
+                // setting attributes like src on an img where you would't
+                // want the unexpanded value to be used by the browser.
                 if (name.charAt(name.length-1) == "-") {
                   e.removeAttribute(attr.name);
                   e.setAttribute(attr.name.slice(0, -1), m);
