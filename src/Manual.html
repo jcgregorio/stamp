@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="stamp.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+  <h1>Intro</h1>
+  <p>Stamp is a small library to stamp out DOM content from a &lt;template&gt;
+    element.
+  </p>
+
+<template id=ex_1_template>
+  <!--
+    Note the optional trailing "-" on href which is removd one
+    the expansion is complete. Any [name] can have a trailing
+    "-".
+  -->
+  <a href-="{{ url }}">Hello World!</a>
+</template>
+
+<div id=ex_1_results></div>
+
+<pre data-target=ex_1_template></pre>
+
+<pre data-target=ex_1_source></pre>
+
+<pre data-target=ex_1_results></pre>
+
+<script type="text/javascript" charset="utf-8" id=ex_1_source>
+  var data = {
+    url: "http://example.com",
+  };
+
+  var ctx = new Stamp.Context();
+  var target = document.getElementById('ex_1_results');
+  Stamp.expandInto(target, ctx.import('ex_1_template'), data );
+</script>
+
+  <script type="text/javascript" charset="utf-8">
+    toExpand = document.querySelectorAll("[data-target]");
+    for (var i = 0, len = toExpand.length; i < len; i++) {
+      dst = toExpand[i];
+      src = document.getElementById(dst.dataset.target);
+      dst.textContent = src.outerHTML;
+    }
+  </script>
+
+</body>
+</html>

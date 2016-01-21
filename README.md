@@ -5,7 +5,7 @@ Given the following template:
 
 ```HTML
 <template id=t>
-  <p><a href="{{ url }}">{{ foo.bar.baz }} {{ quux }}</a>!</p>
+  <p><a href-="{{ url }}">{{ foo.bar.baz }} {{ quux }}</a>!</p>
 </template>
 ```
 
