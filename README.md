@@ -34,4 +34,4 @@ The expansion will look like:
 <p><a href="http://example.com">Hello World</a>!</p>
 ```
 
-See the file How_to_use.html for more demos of basic capabilities.
+See the [documentation](https://github.com/jcgregorio/stamp/wiki) for more info.
