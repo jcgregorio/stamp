@@ -72,7 +72,6 @@ var Stamp = Stamp || {};
   // otherwise returns the expanded string.
   function expandString(s, state) {
     var match;
-    var found = false;
     var matches = [];
 
     while ((match = re.exec(s)) != null) {
@@ -162,30 +161,32 @@ var Stamp = Stamp || {};
                 throw attr.value + " doesn't contain an address.";
               }
               var childState = filterState(address, state);
+              var instanceState = {
+                "^": state,
+              };
               if (Object.prototype.toString.call( childState) === '[object Array]') {
-                for (var k = 0, klen = childState.length; k < klen; k++) {
-                  var item = childState[k];
+                iterName = iterName || "i";
+                for (var k = 0; k < childState.length; k++) {
                   var cl = cloneAllNodes(tpl);
-                  var instanceState = {};
-                  instanceState[name] = item;
-                  instanceState[iterName || "i"] = k;
-                  instanceState["^"] = state;
+                  instanceState[name] =  childState[k];
+                  instanceState[iterName] = k;
                   expand(cl, instanceState);
                   appendChildren(e, cl);
                 }
               } else {
+                iterName = iterName || "key";
                 var keys = Object.keys(childState).sort();
-                for (var m = 0, mlen = keys.length; m < mlen; m++) {
+                for (var m = 0; m < keys.length; m++) {
                   var key = keys[m];
                   var cl = cloneAllNodes(tpl);
-                  var instanceState = {};
                   instanceState[name] = childState[key];
-                  instanceState[iterName || "key"] = key;
-                  instanceState["^"] = state;
+                  instanceState[iterName] = key;
                   expand(cl, instanceState);
                   appendChildren(e, cl);
                 }
               }
+              // Remove the data-repeat-* attribute.
+              e.removeAttribute(attr.name);
             } else {
               m = expandString(attr.value, state);
               if (m != null) {
