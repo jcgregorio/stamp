@@ -95,7 +95,12 @@ var Stamp = Stamp || {};
   function cloneAllNodes(a) {
     var clones = [];
     for (var i = 0, len = a.length; i < len; i++) {
-      clones.push(a[i].cloneNode(true));
+      if (a[i].nodeName == "TEMPLATE") {
+        // Template nodes have their contents hoisted up to this level for expansion.
+        clones.push(a[i].content.cloneNode(true));
+      } else {
+        clones.push(a[i].cloneNode(true));
+      }
     }
     return clones;
   }
@@ -126,6 +131,13 @@ var Stamp = Stamp || {};
   // '^' is added to the child state as a way to access the data in the
   // parent's scope.
   function expand(ele, state) {
+    if (ele.nodeName === "#text") {
+      m = expandString(ele.textContent, state);
+      if (m != null) {
+        ele.textContent = m;
+      }
+      return ele;
+    }
     if (!Array.isArray(ele)) {
       ele = [ele];
     }
@@ -206,8 +218,23 @@ var Stamp = Stamp || {};
         }
       }
       if (processChildren) {
-        for (var i = e.childNodes.length - 1; i >= 0; i--) {
-          expand(e.childNodes[i], state);
+        var childEle = e.firstChild;
+        while (childEle != null) {
+          var nextSibling = childEle.nextSibling;
+          if (childEle.nodeName == "TEMPLATE") {
+            // If this is a template we need to expand the content of the
+            // template node, then replace the template node with the expanded
+            // content.
+            var replacement = expand(childEle.content.cloneNode(true), state);
+            while (replacement[0].childNodes.length > 0) {
+              e.insertBefore(replacement[0].firstChild, childEle);
+            }
+            // Finally remove the original element.
+            e.removeChild(childEle);
+          } else {
+            expand(childEle, state);
+          }
+          childEle = nextSibling;
         }
       }
     }

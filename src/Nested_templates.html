@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="stamp.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+  <template id=t>
+    <!-- Nested repeat loops. -->
+    <ul data-repeat-value-key="top">
+      <li>{{ key }}
+        <!-- This template element will be copied verbatim for each
+          external loop. Once copied the contents of the template
+          element will be expanded.
+
+          This is useful if you want to keep your custom elements
+          freeze-dried until the very last second of expansion.
+          -->
+        <template>
+          <ol data-repeat-value2-key2="{{ value }}">
+            <li>{{ key2 }}={{ value2.name }}</li>
+          </ol>
+        </template>
+      </li>
+    </ul>
+  </template>
+
+  <script type="text/javascript" charset="utf-8">
+
+    var data = {
+        top: {
+          foo: {
+            baz: {name: "Foo Baz"},
+            quux: {name: "Foo Quux"}
+          },
+          bar: {
+            larry: {name: "Bar Larry"},
+            curly: {name: "Bar Curly"}
+          },
+        },
+    };
+
+    var ctx = new Stamp.Context();
+
+    var c = Stamp.expand(ctx.import('t'), data);
+    document.body.appendChild(c[0]);
+  </script>
+</body>
+</html>
