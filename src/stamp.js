@@ -45,6 +45,8 @@ var Stamp = Stamp || {};
       var a = address[i];
       if (a in mystate) {
         mystate = mystate[a];
+      } else if (mystate.hasAttribute && mystate.hasAttribute(a)) {
+        mystate = mystate.getAttribute(a);
       } else {
         throw a + " is not a valid property of " + JSON.stringify(mystate);
       }
