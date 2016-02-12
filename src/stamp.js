@@ -74,6 +74,9 @@ var Stamp = Stamp || {};
     var match;
     var matches = [];
 
+    // Flush re's cache of the last string it was parsing.
+    re.exec("");
+    // Find all the matches in s.
     while ((match = re.exec(s)) != null) {
       matches.push(match);
     }
