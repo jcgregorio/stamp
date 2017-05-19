@@ -19,16 +19,16 @@ var Stamp = Stamp || {};
   // name - The name of the custom element.
   // proto - And object to use as the elements prototype.
   ns.newElement = function(name, proto) {
-    var ep = Object.create(HTMLElement.prototype);
-    Object.keys(proto).forEach(function(key) {
-      ep[key] = proto[key];
-    });
-    var __ = ep.__ = {};
-    __.context = new ns.Context();
-    __.name = name;
-    document.registerElement(name, {
-      prototype: ep
-    });
+    var constr = function() {
+      this.prototype = Object.create(HTMLElement.prototype);
+      Object.keys(proto).forEach(function(key) {
+        this[key] = proto[key];
+       });
+       this.__ = {};
+       this.__.context = new ns.Context();
+       this.__.name = name;
+     }
+    window.customElements.define(name, constr);
   }
 
   // Regex to grab double moustache'd content.
