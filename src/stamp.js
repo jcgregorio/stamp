@@ -25,8 +25,8 @@ var Stamp = Stamp || {};
         this[key] = proto[key];
        });
        this.__ = {};
-       __.context = new ns.Context();
-       __.name = name;
+       this.__.context = new ns.Context();
+       this.__.name = name;
      }
     window.customElements.define(name, constr);
   }
