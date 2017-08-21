@@ -1,36 +1,22 @@
-<template id="my-element">
-  <button>{{ title }}</button>
-  <div>
-    <host-content select="*"></host-content>
-  </div>
-</template>
-
-<script type="text/javascript" charset="utf-8">
-  Stamp.newElement('my-element', {
-    createdCallback: function() {
-      this.title = "Hello";
-      Stamp.elementExpand(this);
-    },
-  });
-</script>
-
-
+<!--
+An example of a custom element with a template.
+-->
 <template id="my-template">
-  <button>{{ title }}</button>
+  <button>{{ name }}</button>
 </template>
 
 <script type="text/javascript" charset="utf-8">
-  (function() {
+  (function () {
     var ctx = new Stamp.Context();
+    customElements.define('my-element', class extends HTMLElement {
+      constructor() {
+        super();
+      }
 
-    Stamp.newElement('my-element2', {
-      createdCallback: function() {
-        this.title = "Hello";
-      },
-
-      setData: function(data) {
-        Stamp.expandInto(this, ctx.import('my-template'), data);
-      },
+      connectedCallback() {
+        let state = {name: "Hello"};
+        Stamp.expandInto(this, ctx.import('my-template'), state);
+      }
     });
   })();
 </script>

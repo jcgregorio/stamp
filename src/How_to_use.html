@@ -17,20 +17,32 @@
 <body>
 
   <template id=t>
-    <!--
-      Note the optional trailing "-" on href which is removd one
-      the expansion is complete. Any [name] can have a trailing
-      "-".
-    -->
+    <p>
+      Templates use double moustaches to mark templated content.
+    </p>
+    <p>
+      For example: Hello, {{ name }}.
+    </p>
+    <p>
+      Expansion is done both in text elements and in node attributes.
+    </p>
+    <p>
+      <input type="text" value="{{ url }}" />
+    </p>
+    <p>
+      Some nodes have attributes that are strictly checked by the browser, so
+      Stamp allows appending an optional trailing "-" on an attribute that is
+      removed once the expansion is complete. For example, note the trailing "-"
+      on the href below, which is removd one the expansion is complete. Any
+      attribute name can have a trailing "-".
+    </p>
     <p><a href-="{{ url }}">{{ foo.bar.baz }} {{ quux }}</a>!</p>
 
-    <!--
-    Loop over arrays. Use data attributes of
-    data-repeat-[name]="x.y.z" and reference
-    the values iterated over using {{ [name] }}.
-
-    For arrays the 'i' state variable is also set.
-    -->
+    <p>
+      Loop over arrays. Use data attributes of data-repeat-[name]="x.y.z" and
+      reference the values iterated over using {{ [name] }}.  For arrays the
+      'i' state variable is also set.
+    </p>
     <ul data-repeat-char="list">
       <li>{{ char }} {{ i }}</li>
     </ul>
@@ -42,9 +54,9 @@
       {{ char }} {{ index }}
     </p>
 
-    <!--
-    Loop over Objects. For objects the 'key' state variable is also set.
-    -->
+    <p>
+      Loop over Objects. For objects the 'key' state variable is also set.
+    </p>
     <ul data-repeat-o="anobj">
       <li class-="item{{ key }}">{{ key }}={{ o.name }}</li>
       <li>{{ o.name }}={{ key }}</li>
@@ -54,7 +66,9 @@
       <li>{{ key2 }}={{ value.name }}</li>
     </ul>
 
-    <!-- Nested repeat loops. -->
+    <p>
+      Nested repeat loops that also demonstrace the ^ operator.
+    </p>
     <ul data-repeat-value-key="top">
       <li>{{ key }}
         <ol data-repeat-value2-key2="{{ value }}">
@@ -64,49 +78,15 @@
     </ul>
   </template>
 
-
-  <div id=target>
-    <host-content select="h1"></host-content>
-    <host-content select="p"></host-content>
-  </div>
-
-  <div id=source>
-    <p>First paragraph</p>
-    <p>Second paragraph</p>
-    <h1>A header</h1>
-  </div>
-
-  <div id=target2>
-    <button>Press Me</button>
-    <host-content select="*"></host-content>
-  </div>
-
-  <div id=source2>
-    <p>Second paragraph</p>
-    <h1>A header</h1>
-  </div>
-
-  <template id=u>
-    <button>{{ title }}</button>
-    <div>
-      <host-content select="*"></host-content>
-    </div>
-  </template>
-
-  <div id=source3>
-    <h1>A header</h1>
-    <p>Second paragraph</p>
-  </div>
-
-  <div id=source4>
-    <ul>
-      <li>Second paragraph</li>
-    </ul>
-  </div>
+  <p>
+    The template will be expanded with data and the resulting DOM tree will
+    be inserted into the div below.
+  </p>
+  <div id=target></div>
 
   <script type="text/javascript" charset="utf-8">
-
-    var data = {
+    (function () {
+      var data = {
         foo: { bar: { baz: "Hello"}},
         quux: "World",
         list: ["a", "b", "c"],
@@ -126,37 +106,18 @@
         },
         url: "http://example.com",
         title: "Press Me",
-    };
+        name: "Joe",
+      };
 
-    var ctx = new Stamp.Context();
-
-    var c = Stamp.expand(ctx.import('t'), data);
-    document.body.appendChild(c[0]);
-
-    var source = document.getElementById('source');
-    var target = document.getElementById('target');
-    Stamp.distribute(target, source);
-
-    var source2 = document.getElementById('source2');
-    var target2 = document.getElementById('target2');
-    Stamp.distribute(target2, source2);
-
-    var source3 = document.getElementById('source3');
-    var d = Stamp.expandAndDistribute(ctx.import('u'), data, source3);
-    document.body.appendChild(d[0]);
+      var ctx = new Stamp.Context();
+      Stamp.expandInto(document.getElementById('target'), ctx.import('t'), data);
+    })();
   </script>
 
-  <my-element>
-    <button>Me</button>
-  </my-element>
-
-  <my-element2 id=e2>
-    <p>This should disappear.</p>
-  </my-element2>
-
-  <script type="text/javascript" charset="utf-8">
-    document.getElementById('e2').setData({title: "Fin!"});
-  </script>
+  <p>
+    This is a demonstration of a custom element, defined in an HTML Import, that uses template expansion.
+  </p>
+  <my-element></my-element>
 
 </body>
 </html>

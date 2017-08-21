@@ -14,23 +14,6 @@ var Stamp = Stamp || {};
     return document.importNode(this.doc.querySelector('#'+id).content, true);
   };
 
-  // Utiltity function for creating a custom element.
-  //
-  // name - The name of the custom element.
-  // proto - And object to use as the elements prototype.
-  ns.newElement = function(name, proto) {
-    var constr = function() {
-      this.prototype = Object.create(HTMLElement.prototype);
-      Object.keys(proto).forEach(function(key) {
-        this[key] = proto[key];
-       });
-       this.__ = {};
-       this.__.context = new ns.Context();
-       this.__.name = name;
-     }
-    window.customElements.define(name, constr);
-  }
-
   // Regex to grab double moustache'd content.
   var re = /{{\s([\w\.\^]+)\s}}/g;
 
@@ -252,62 +235,7 @@ var Stamp = Stamp || {};
     replaceChildren(target, expand(ele, state));
   }
 
-  // <host-content> acts similar to the classic <content select="[css selector]"></content>,
-  // but as of today <content> isn't standardized and may change in the
-  // future, so we use our own custom element for now.
-  ns.newElement('host-content', {});
-
-  // Look for <host-content> elements in target and use their select's to pick
-  // nodes from source to replace it with.
-  function distribute(targets, source) {
-    if (!Array.isArray(targets)) {
-      targets = [targets];
-    }
-    for (var i = targets.length - 1; i >= 0; i--) {
-      var target = targets[i];
-      var nodes = target.querySelectorAll('host-content');
-      for (var i=nodes.length-1; i>=0; i--) {
-        var node = nodes.item(i);
-        var parent = node.parentNode;
-        var select = node.getAttribute('select');
-        if (select) {
-          var sources = source.querySelectorAll(select);
-          for (var j=sources.length-1; j>=0; j--) {
-            parent.insertBefore(sources.item(j), node);
-          }
-        }
-        parent.removeChild(node);
-      }
-    }
-    return targets;
-  };
-
-  // Expand ele with the values in state, then distribute
-  // nodes in source within the result.
-  function expandAndDistribute(ele, state, source) {
-    return distribute(expand(ele, state), source);
-  };
-
-  // state is optional, if not provided then 'ele' is used.
-  // id is optional, if not provided then ele.__.name is used.
-  // Presumes that ele is a custom element created with newElement, i.e.
-  // that ele.__.context will be a Context object, and that
-  // ele.__.name will be the element name.
-  function elementExpand(ele, id, state) {
-    if (state === undefined) {
-      state = ele;
-    }
-    if (id === undefined) {
-      id = ele.__.name;
-    }
-    var d = ns.expandAndDistribute(ele.__.context.import(id), state, ele);
-    ns.appendChildren(ele, d);
-  }
-
   ns.appendChildren = appendChildren;
   ns.expand = expand;
-  ns.distribute = distribute;
-  ns.expandAndDistribute = expandAndDistribute;
-  ns.elementExpand = elementExpand;
   ns.expandInto = expandInto;
 })(Stamp);
