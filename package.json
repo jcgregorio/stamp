@@ -1,0 +1,26 @@
+{
+  "name": "template-stamp",
+  "version": "2.0.0",
+  "description": "Stamps out DOM elements from an HTML Template and data.",
+  "main": "src/stamp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jcgregorio/stamp.git"
+  },
+  "keywords": [
+    "html",
+    "template",
+    "data",
+    "web",
+    "components"
+  ],
+  "author": "Joe Gregorio",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/jcgregorio/stamp/issues"
+  },
+  "homepage": "https://github.com/jcgregorio/stamp#readme"
+}
